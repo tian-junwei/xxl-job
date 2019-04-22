@@ -1,8 +1,6 @@
 package com.xxl.job.admin.dao;
 
 import com.xxl.job.admin.core.model.XxlJobLog;
-import com.xxl.job.admin.dao.XxlJobLogDao;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,7 +30,6 @@ public class XxlJobLogDaoTest {
         int ret1 = xxlJobLogDao.save(log);
         XxlJobLog dto = xxlJobLogDao.load(log.getId());
 
-        log.setGlueType("1");
         log.setTriggerTime(new Date());
         log.setTriggerCode(1);
         log.setTriggerMsg("1");
@@ -50,7 +47,7 @@ public class XxlJobLogDaoTest {
         dto = xxlJobLogDao.load(log.getId());
 
 
-        List<Map<String, Object>> list2 = xxlJobLogDao.triggerCountByDay(DateUtils.addDays(new Date(), 30), new Date());
+        List<Map<String, Object>> list2 = xxlJobLogDao.triggerCountByDay(new Date(new Date().getTime() + 30*24*60*60*1000), new Date());
 
         int ret4 = xxlJobLogDao.clearLog(1, 1, new Date(), 100);
 

@@ -20,8 +20,8 @@
 		<result column="executor_handler" property="executorHandler" />
 	    <result column="executor_param" property="executorParam" />
 		<result column="executor_block_strategy" property="executorBlockStrategy" />
-		<result column="executor_fail_strategy" property="executorFailStrategy" />
 		<result column="executor_timeout" property="executorTimeout" />
+		<result column="executor_fail_retry_count" property="executorFailRetryCount" />
 
 	    <result column="glue_type" property="glueType" />
 	    <result column="glue_source" property="glueSource" />
@@ -44,8 +44,8 @@
 		t.executor_handler,
 		t.executor_param,
 		t.executor_block_strategy,
-		t.executor_fail_strategy,
 		t.executor_timeout,
+		t.executor_fail_retry_count,
 		t.glue_type,
 		t.glue_source,
 		t.glue_remark,
@@ -68,12 +68,7 @@
 			</if>
 		</trim>
 		ORDER BY id DESC
-		<if test="_databaseId == 'mysql'">
-			LIMIT #{offset}, #{pagesize}
-		</if>
-		<if test="_databaseId == 'postgresql'">
-			LIMIT #{pagesize} OFFSET #{offset}
-		</if>
+		LIMIT #{offset}, #{pagesize}
 	</select>
 
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
@@ -105,8 +100,8 @@
 			executor_handler,
 			executor_param,
 			executor_block_strategy,
-			executor_fail_strategy,
 			executor_timeout,
+			executor_fail_retry_count,
 			glue_type,
 			glue_source,
 			glue_remark,
@@ -116,31 +111,20 @@
 			#{jobGroup},
 			#{jobCron},
 			#{jobDesc},
-		<if test="_databaseId == 'mysql'">
 			NOW(),
 			NOW(),
-		</if>
-		<if test="_databaseId == 'postgresql'">
-			(select NOW()),
-			(select NOW()),
-		</if>
 			#{author},
 			#{alarmEmail},
 			#{executorRouteStrategy},
 			#{executorHandler},
 			#{executorParam},
 			#{executorBlockStrategy},
-			#{executorFailStrategy},
 			#{executorTimeout},
+			#{executorFailRetryCount},
 			#{glueType},
 			#{glueSource},
 			#{glueRemark},
-		<if test="_databaseId == 'mysql'">
 			NOW(),
-		</if>
-		<if test="_databaseId == 'postgresql'">
-			(select NOW()),
-		</if>
 			#{childJobId}
 		);
 		<!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
@@ -158,22 +142,18 @@
 	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" >
 		UPDATE XXL_JOB_QRTZ_TRIGGER_INFO
 		SET
+			job_group = #{jobGroup},
 			job_cron = #{jobCron},
 			job_desc = #{jobDesc},
-			<if test="_databaseId == 'mysql'">
-				update_time = NOW(),
-			</if>
-			<if test="_databaseId == 'postgresql'">
-				update_time = (select NOW()),
-			</if>
+			update_time = NOW(),
 			author = #{author},
 			alarm_email = #{alarmEmail},
 			executor_route_strategy = #{executorRouteStrategy},
 			executor_handler = #{executorHandler},
 			executor_param = #{executorParam},
 			executor_block_strategy = #{executorBlockStrategy},
-			executor_fail_strategy = #{executorFailStrategy},
 			executor_timeout = ${executorTimeout},
+			executor_fail_retry_count = ${executorFailRetryCount},
 			glue_type = #{glueType},
 			glue_source = #{glueSource},
 			glue_remark = #{glueRemark},
