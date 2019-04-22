@@ -1,11 +1,10 @@
 package com.xxl.job.executor.core.config;
 
-import com.xxl.job.core.executor.XxlJobExecutor;
+import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
  * @author xuxueli 2017-04-28
  */
 @Configuration
-@ComponentScan(basePackages = "com.xxl.job.executor.service.jobhandler")
 public class XxlJobConfig {
     private Logger logger = LoggerFactory.getLogger(XxlJobConfig.class);
 
@@ -41,18 +39,36 @@ public class XxlJobConfig {
 
 
     @Bean(initMethod = "start", destroyMethod = "destroy")
-    public XxlJobExecutor xxlJobExecutor() {
+    public XxlJobSpringExecutor xxlJobExecutor() {
         logger.info(">>>>>>>>>>> xxl-job config init.");
-        XxlJobExecutor xxlJobExecutor = new XxlJobExecutor();
-        xxlJobExecutor.setAdminAddresses(adminAddresses);
-        xxlJobExecutor.setAppName(appName);
-        xxlJobExecutor.setIp(ip);
-        xxlJobExecutor.setPort(port);
-        xxlJobExecutor.setAccessToken(accessToken);
-        xxlJobExecutor.setLogPath(logPath);
-        xxlJobExecutor.setLogRetentionDays(logRetentionDays);
+        XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
+        xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
+        xxlJobSpringExecutor.setAppName(appName);
+        xxlJobSpringExecutor.setIp(ip);
+        xxlJobSpringExecutor.setPort(port);
+        xxlJobSpringExecutor.setAccessToken(accessToken);
+        xxlJobSpringExecutor.setLogPath(logPath);
+        xxlJobSpringExecutor.setLogRetentionDays(logRetentionDays);
 
-        return xxlJobExecutor;
+        return xxlJobSpringExecutor;
     }
+
+    /**
+     * 针对多网卡、容器内部署等情况，可借助 "spring-cloud-commons" 提供的 "InetUtils" 组件灵活定制注册IP；
+     *
+     *      1、引入依赖：
+     *          <dependency>
+     *             <groupId>org.springframework.cloud</groupId>
+     *             <artifactId>spring-cloud-commons</artifactId>
+     *             <version>${version}</version>
+     *         </dependency>
+     *
+     *      2、配置文件，或者容器启动变量
+     *          spring.cloud.inetutils.preferred-networks: 'xxx.xxx.xxx.'
+     *
+     *      3、获取IP
+     *          String ip_ = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+     */
+
 
 }
