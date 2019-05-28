@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * xxl-job config
@@ -30,13 +31,6 @@ public class XxlJobAdminConfig implements InitializingBean{
     }
 
     // conf
-
-    @Value("${xxl.job.login.username}")
-    private String loginUsername;
-
-    @Value("${xxl.job.login.password}")
-    private String loginPassword;
-
     @Value("${xxl.job.i18n}")
     private String i18n;
 
@@ -60,14 +54,9 @@ public class XxlJobAdminConfig implements InitializingBean{
     private AdminBiz adminBiz;
     @Resource
     private JavaMailSender mailSender;
+    @Resource
+    private DataSource dataSource;
 
-    public String getLoginUsername() {
-        return loginUsername;
-    }
-
-    public String getLoginPassword() {
-        return loginPassword;
-    }
 
     public String getI18n() {
         return i18n;
@@ -103,6 +92,10 @@ public class XxlJobAdminConfig implements InitializingBean{
 
     public JavaMailSender getMailSender() {
         return mailSender;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
 }
